@@ -1,22 +1,7 @@
-<?php /* Template Name: Client Profile Template */ get_header(); ?>
+<?php /* Template Name: Client Profile Template */ get_header();
+get_template_part('template-parts/breadcrumb');
+?>
 
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-12 col-12">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="<?php echo get_home_url(); ?>">Página principal</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Perfil del Cliente</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Perfil del Cliente</h2>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Breadcrumb -->
 
 <!-- Page Content -->
 <div class="content">

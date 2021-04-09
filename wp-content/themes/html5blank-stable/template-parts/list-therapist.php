@@ -1,23 +1,8 @@
 <?php /* Template Name: List Therapist Template */ get_header();
+
+get_template_part('template-parts/breadcrumb');
 ?>
 
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-12 col-12">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="<?php echo get_home_url(); ?>">Página principal</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Lista de Terapeutas</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Lista de Terapeutas</h2>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Breadcrumb -->
 
 <!-- Page Content -->
 <div class="content">
@@ -33,7 +18,7 @@
 						<form action="" method="GET">
 							<div class="filter-widget">	
 								<select name="orderby" id="orderby">
-									<option value="users_registered" <?php echo selected($_GET['orderby'], 'users_registered'); ?>>Lo mas Nuevo</option>
+									<option value="registered" <?php echo selected($_GET['orderby'], 'registered'); ?>>Fecha de registro</option>
 									<option value="display_name" <?php echo selected($_GET['orderby'], 'display_name'); ?>>Alfabetico</option>
 								</select>
 								<input id="order" type="hidden" name="order" value="<?php echo (isset($_GET['order']) && $_GET['order'] == 'ASC') ? 'ASC': 'DESC'; ?>">
@@ -99,7 +84,7 @@ if(array_key_exists('profesion', $_GET)):
 	$terapeutas = array();
 	if (isset($_GET['profesion'])):
 		foreach($_GET['profesion'] as $profesion):
-			$term_search_id = get_term_by('name', $profesion, 'profesion');
+			$term_search_id = get_term_by('slug', $profesion, 'profesion');
 			if ($term_search_id->count == 0):
 				continue;
 			endif;
@@ -143,51 +128,19 @@ elseif (array_key_exists('search', $_GET)):
 	} 
 endif;
 ?>
-<!-- Upcoming Appointment Tab -->
-	<div class="tab-pane show active" id="upcoming-appointments">
-		<div class="card card-table mb-0">
-			<div class="card-body">
-				<div class="table-responsive">
-					<table class="table table-hover table-center mb-0 wppb-table">
-						<thead>
-							<tr>
-								<th scope="col" colspan="2" class="wppb-sorting text-center">Perfil de usuario</th>
-								<th scope="col" class="wppb-sorting">Nombre Completo</th>
-								<th scope="col" class="wppb-sorting">Rol de usuario</th>
-								<th scope="col" class="wppb-sorting">Pagina Web</th>
-								<th scope="col" class="wppb-sorting">Profesion</th>
-								<th scope="col">More</th>
-							</tr>
-						</thead>
+
+
+
+
 <?php
 if (isset($terapeutas)):
-?>
+	foreach($terapeutas as $terapeuta):
+		$args = array(
+			'user' => $terapeuta
+		);
+		get_template_part('template-parts/list', 'user', $args);
+ endforeach;
 
-						
-						<tbody>
-						<?php
-						foreach($terapeutas as $terapeuta):
-							$datos = $terapeuta->data;
-							
-
-						?>
-							<tr>
-								<td data-label="Avatar" class="wppb-avatar"><a href="<?php echo the_author_meta( 'foto_usuario'); ?>" class="booking-doc-img">
-  <img src="<?php echo the_author_meta( 'foto_usuario'); ?>" class="img-fluid" alt="User Image"></a></td>
-								<td data-label="UserEmail" class="wppb-login"><?php echo $datos->user_email; ?></td>
-								<td data-label="DisplayName" class="wppb-name"><?php echo $datos->display_name; ?></td>
-								<td data-label="Role" class="wppb-role"><?php echo $terapeuta->roles[0]; ?></td>
-								<td data-label="WebPage" class="wppb-posts"><?php echo $terapeuta->user_url; ?></td>
-								<td data-label="Profession" class="wppb-signup"><?php $terms_usuario = wp_get_object_terms($datos->ID, $taxonomia);
-																						foreach($terms_usuario as $term_usuario):
-																							echo $term_usuario->name;
-																						endforeach; ?></td>
-								<td data-label="More" class="wppb-moreinfo"><a href="<?php echo get_author_posts_url($datos->ID); ?>">Ver perfil</a></td>
-							</tr>
-						<?php endforeach; ?>
-						</tbody>
-					
-<?php
 else:
 	if ($_GET['orderby'] == 'display_name') {
 		$args = array(
@@ -203,36 +156,14 @@ else:
 		$users = get_users( $args );
 	}
 
-?>
-						<tbody>
-<?php
 	foreach($users as $user):
-		$datos = $user->data;
-?>
-							<tr>
-								<td data-label="Avatar" class="wppb-avatar"><a href="<?php echo the_author_meta( 'foto_usuario'); ?>" class="booking-doc-img">
-  <img src="<?php echo the_author_meta( 'foto_usuario'); ?>" class="img-fluid" alt="User Image"></a></td>
-								<td data-label="Username" class="wppb-login"><?php echo $datos->user_email; ?></td>
-								<td data-label="Firstname" class="wppb-name"><?php echo $datos->display_name; ?></td>
-								<td data-label="Role" class="wppb-role"><?php echo $user->roles[0]; ?></td>
-								<td data-label="Posts" class="wppb-posts"><?php echo $user->user_url; ?></td>
-								<td data-label="Sign-up Date" class="wppb-signup"><?php $terms_usuario = wp_get_object_terms($datos->ID, $taxonomia);
-																						foreach($terms_usuario as $term_usuario):
-																							echo $term_usuario->name;
-																						endforeach; ?></td>
-								<td data-label="More" class="wppb-moreinfo"><a href="<?php echo get_author_posts_url($datos->ID); ?>">Ver perfil</a></td>
-							</tr>
-<?php endforeach; ?>
-						</tbody>
-
-<?php
+		$args = array(
+			'user' => $user
+		);
+		get_template_part('template-parts/list', 'user', $args);
+	endforeach;
 endif;
 ?>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
 <!-- /Upcoming Appointment Tab -->
 </div>
 </div>
@@ -247,7 +178,7 @@ if (archiveOrder && archiveOrderby) {
 
         const orderBy = archiveOrderby.options[archiveOrderby.selectedIndex].value;
 
-        if ('users_registered' === orderBy) {
+        if ('registered' === orderBy) {
             archiveOrder.value = 'ASC';
         } else {
             archiveOrder.value = 'DESC';

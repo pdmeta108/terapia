@@ -45,25 +45,9 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['action']) && $_POST['
 get_header();
 
 
-?>
+get_template_part('template-parts/breadcrumb');
 
-<!-- Breadcrumb -->
-<div class="breadcrumb-bar">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-12 col-12">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="<?php echo get_home_url();?>">Página principal</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Perfil del Terapeuta</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Perfil del Terapeuta</h2>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Breadcrumb -->
+?>
 
 <!-- Page Content -->
 <div class="content">
@@ -89,6 +73,11 @@ get_header();
                             <?php else: ?>
                                 <?php if ( count($error) > 0 ) : 
                                     echo '<div class="alert alert-danger alert-dismissible fade show error" role="alert"> <strong>Error!</strong> ' . implode("<br />", $error) . '
+                                    <strong>Error!</strong><pre>';
+                                    
+                                    print_r($error);
+                                    
+                                    echo '.</pre>
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button></div>';

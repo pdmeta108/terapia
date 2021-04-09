@@ -46,7 +46,7 @@ get_header(); ?>
 						<span class="d-inline-block average-rating">(35)</span>
 					</div>
 					<div class="clinic-details">
-						<p class="doc-location"><i class="fas fa-map-marker-alt"></i> Newyork, USA - <a href="javascript:void(0);">Get Directions</a></p>
+						<p class="doc-location"><i class="fas fa-map-marker-alt"></i> Newyork, USA - <a href="javascript:void(0);">Ver Dirección</a></p>
 						<ul class="clinic-gallery">
 							<li>
 								<a href="<?php echo get_stylesheet_directory_uri();?>/assets/img/features/feature-01.jpg" data-fancybox="gallery">

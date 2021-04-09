@@ -32,9 +32,10 @@
                             <?php endif; ?>
                         </div>
                         
-                            <form method="POST" action="<?php echo the_permalink(); ?>">
+                            <form method="POST" action="<?php echo the_permalink();?>">
                                     <?php $id_post = get_the_ID(); ?>
                                     <input type="hidden" name="post_id" value="<?php echo $id_post;?>">
+                                    <input type="hidden" name="user_id" value="<?php echo $args['user'];?>">
                                     <input style="font-size: 16px" class="btn btn-primary btn-block btn-lg login-btn" type="submit" value="EDITAR">
                             </form>
                         

@@ -373,7 +373,9 @@ function load_javascript_theme_files() {
 }
 
 function load_fancybox_script() {
-    if (is_author()) {
+    global $wp;
+    $current_slug = add_query_arg( array(), $wp->request );
+    if (is_author() || ($current_slug === 'terapeutas-lista')) {
         wp_register_style('fancybox', get_template_directory_uri() . '/assets/plugins/fancybox/jquery.fancybox.min.css');
         wp_enqueue_style('fancybox');
         wp_enqueue_script('fancybox', get_template_directory_uri() . '/assets/plugins/fancybox/jquery.fancybox.min.js',  array( 'jquery' ));
@@ -390,6 +392,15 @@ function load_sticky_script() {
     }    
 }
 
+function load_calendar_script() {
+    global $wp;
+    $current_slug = add_query_arg( array(), $wp->request );
+    if ($current_slug === 'events') {
+        wp_register_style('calendar', get_template_directory_uri() . '/assets/plugins/fullcalendar/fullcalendar.min.css');
+        wp_enqueue_style('calendar');
+    }
+}
+
 function doccure_ajax_files() {
     wp_enqueue_script('app',  get_template_directory_uri() . '/js/app.js');
 }
@@ -404,32 +415,7 @@ function add_type_attribute($tag, $handle, $src) {
     return $tag;
 }
 
-function load_more_posts() {
-    $next_page = $_POST['current_page'] + 1;
-    $query = new WP_Query([
-        'post_type' => 'videos',
-        'post_status' => 'publish',
-        'posts_per_page' => 3,
-        'author' => $current_user->ID,
-        'paged' => $next_page,
-    ]);
-    if ($query->have_posts()) :
 
-        ob_start();
-    
-    while ($query->have_post()) : $query->the_post();
-        get_template_part('template-parts/videos-content');
-    endwhile;
-
-    wp_send_json_success(ob_get_clean());
-
-    else:
-        wp_send_json_error('No hay mas videos');
-    endif;
-}
-
-add_action('wp_ajax_nopriv_load_more_posts', 'load_more_posts');
-add_action('wp_ajax_load_more_posts', 'load_more_posts');
 
 /* Agregar script para borrar CPT (videos) */
 function delete_frontend_script() {
@@ -653,6 +639,60 @@ function wpcfu_handle_file_upload() {
 add_action( 'init', 'wpcfu_handle_file_upload' );
 
 /*
+ * Create a column. And maybe remove some of the default ones
+ * @param array $columns Array of all user table columns {column ID} => {column Name} 
+ */
+add_filter( 'manage_users_columns', 'rudr_modify_user_table' );
+ 
+function rudr_modify_user_table( $columns ) {
+ 
+	// unset( $columns['posts'] ); // maybe you would like to remove default columns
+	$columns['registration_date'] = 'Fecha de registro'; // add new
+ 
+	return $columns;
+ 
+}
+ 
+/*
+ * Fill our new column with the registration dates of the users
+ * @param string $row_output text/HTML output of a table cell
+ * @param string $column_id_attr column ID
+ * @param int $user user ID (in fact - table row ID)
+ */
+add_filter( 'manage_users_custom_column', 'rudr_modify_user_table_row', 10, 3 );
+ 
+function rudr_modify_user_table_row( $row_output, $column_id_attr, $user ) {
+ 
+	$date_format = 'j M, Y H:i';
+ 
+	switch ( $column_id_attr ) {
+		case 'registration_date' :
+			return date( $date_format, strtotime( get_the_author_meta( 'registered', $user ) ) );
+			break;
+		default:
+	}
+ 
+	return $row_output;
+ 
+}
+ 
+/*
+ * Make our "Registration date" column sortable
+ * @param array $columns Array of all user sortable columns {column ID} => {orderby GET-param} 
+ */
+add_filter( 'manage_users_sortable_columns', 'rudr_make_registered_column_sortable' );
+ 
+function rudr_make_registered_column_sortable( $columns ) {
+	return wp_parse_args( array( 'registration_date' => 'registered' ), $columns );
+}
+
+
+function my_em_custom_formats( $array ){
+	$my_formats = array('dbem_single_event_format','dbem_full_calendar_event_format'); //the format you want to override, corresponding to file above.
+	return $array + $my_formats; //return the default array and your formats.
+}
+add_filter('em_formats_filter', 'my_em_custom_formats', 1, 1);
+/*
 ** Crear taxonomia para usuarios del role terapeuta
 ** @see 
 */
@@ -755,6 +795,7 @@ add_action('wp_enqueue_scripts', 'load_jquery');
 add_action('wp_enqueue_scripts', 'load_javascript_theme_files');
 add_action('wp_enqueue_scripts', 'load_fancybox_script');
 add_action('wp_enqueue_scripts', 'load_sticky_script');
+add_action('wp_enqueue_scripts', 'load_calendar_script');
 add_action('wp_enqueue_scripts', 'doccure_ajax_files');
 add_action( 'init', 'add_user_therapist_taxonomy', 0);
 add_action( 'wp_ajax_my_delete_post', 'my_delete_post');

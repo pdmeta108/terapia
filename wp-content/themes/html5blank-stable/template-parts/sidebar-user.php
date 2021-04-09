@@ -52,17 +52,17 @@
 											<span>Crear / Editar Posts</span>
 										</a>
 									</li>
-									<li <?php if (strpos($current_page, 'eventos')) { ?> class="active" <?php } ?>>
-										<a href="<?php echo home_url().'/perfil-terapeuta';?>">
+									<li <?php if (strpos($current_page, 'eventos-terapeuta')) { ?> class="active" <?php } ?>>
+										<a href="<?php echo home_url().'/eventos-terapeuta';?>">
 											<i class="fas fa-comments"></i>
-											<span>Eventos</span>
+											<span>Crear Eventos</span>
 											<!-- <small class="unread-msg">23</small> -->
 										</a>
 									</li>
-									<li <?php if (strpos($current_page, 'terapeutas-lista')) { ?> class="active" <?php } ?>>
-										<a href="<?php echo home_url().'/terapeutas-lista';?>">
+									<li <?php if (strpos($current_page, 'mis-eventos')) { ?> class="active" <?php } ?>>
+										<a href="<?php echo home_url().'/mis-eventos';?>">
 											<i class="fas fa-user"></i>
-											<span>Mis Clientes</span>
+											<span>Mis Eventos</span>
 										</a>
 									</li>
 									<li>
